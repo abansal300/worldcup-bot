@@ -1,0 +1,33 @@
+services:
+  - type: worker
+    name: worldcup-bot
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/main.py
+    envVars:
+      - key: KALSHI_API_KEY_ID
+        sync: false
+      - key: KALSHI_PRIVATE_KEY_CONTENTS
+        sync: false
+      - key: DRY_RUN
+        value: "true"
+      - key: POLL_INTERVAL_SECONDS
+        value: "60"
+      - key: KELLY_FRACTION
+        value: "0.25"
+      - key: MAX_POSITION_DOLLARS
+        value: "50"
+      - key: MAX_TOTAL_EXPOSURE_DOLLARS
+        value: "500"
+      - key: EDGE_THRESHOLD
+        value: "0.05"
+      - key: GOALS_EDGE_THRESHOLD
+        value: "0.05"
+      - key: GOALS_MIN_PROB
+        value: "0.65"
+      - key: GOALS_TRADE_MIN
+        value: "75"
+      - key: GOALS_TRADE_MAX
+        value: "95"
+      - key: ADDED_TIME_ESTIMATE
+        value: "4"
