@@ -196,27 +196,8 @@ def run_goals_cycle(
             if contracts < 1:
                 continue
 
-            print(
-                f"    {'[DRY RUN] ' if executor.dry_run else ''}GOALS SIGNAL: "
-                f"BUY {contracts}x {signal['side'].upper()} on {market['ticker']!r} "
-                f"@ ${signal['limit_price']:.2f} | "
-                f"{signal['direction']} {signal['line']} goals | "
-                f"current={total} goals, {mins_left:.0f} min left | "
-                f"model={signal['model_prob']:.1%} market={signal['market_prob']:.1%} "
-                f"edge={signal['edge']:.1%}"
-            )
-
-            if not executor.dry_run:
-                try:
-                    result = client.create_order(
-                        ticker=market["ticker"],
-                        side=signal["side"],
-                        count=contracts,
-                        price=signal["limit_price"],
-                    )
-                    print(f"    Order placed: {result}")
-                except Exception as e:
-                    print(f"    Order failed: {e}")
+            print(f"    {total} goals at {minute}', {mins_left:.0f} min left")
+            executor.execute_goals(market["ticker"], signal, contracts)
 
 
 # --- Standalone entry point ---

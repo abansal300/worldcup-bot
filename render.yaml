@@ -10,7 +10,7 @@ services:
       - key: KALSHI_PRIVATE_KEY_CONTENTS
         sync: false
       - key: DRY_RUN
-        value: "true"
+        value: "false"
       - key: POLL_INTERVAL_SECONDS
         value: "60"
       - key: KELLY_FRACTION

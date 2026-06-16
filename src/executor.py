@@ -58,3 +58,40 @@ class Executor:
             self._placed.add(signal.ticker)
         else:
             self._placed.add(signal.ticker)
+
+    def execute_goals(self, ticker: str, signal: dict, contracts: int) -> None:
+        if ticker in self._placed:
+            print(f"    [SKIP] Already traded {ticker} this session")
+            return
+
+        cost = contracts * signal["limit_price"]
+        exposure = self.current_exposure()
+        if exposure + cost > self.max_total_exposure:
+            print(
+                f"    [SKIP] {ticker}: exposure limit reached "
+                f"(${exposure:.2f} + ${cost:.2f} > ${self.max_total_exposure:.2f})"
+            )
+            return
+
+        print(
+            f"    {'[DRY RUN] ' if self.dry_run else ''}GOALS SIGNAL: "
+            f"BUY {contracts}x {signal['side'].upper()} on {ticker!r} "
+            f"@ ${signal['limit_price']:.2f} | "
+            f"{signal['direction']} {signal['line']} goals | "
+            f"model={signal['model_prob']:.1%} market={signal['market_prob']:.1%} "
+            f"edge={signal['edge']:.1%}"
+        )
+
+        if not self.dry_run:
+            try:
+                result = self.client.create_order(
+                    ticker=ticker,
+                    side=signal["side"],
+                    count=contracts,
+                    price=signal["limit_price"],
+                )
+                print(f"    Order placed: {result}")
+            except Exception as e:
+                print(f"    Order failed: {e}")
+
+        self._placed.add(ticker)
